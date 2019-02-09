@@ -1,5 +1,6 @@
 package util;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import main.Game;
@@ -43,23 +44,34 @@ public class Helper {
 		return moveList;
 	}
 	
-	public static boolean isCheck(Game gameRef, byte color) {
-		Pair kingPos = null;
+	public static boolean isAttacked(Game gameRef, ArrayList<Pair> positions, byte color) {
 		for (int i = 0; i < 8; ++i) {
 			for (int j = 0; j < 8; ++j) {
-				if (gameRef.isKing(i, j) && (gameRef.getColor(i, j) & Constant.WHITE) == color) {
-					kingPos = new Pair(i, j);
-					continue;
-				}
-				
-				if ((gameRef.getColor(i, j) & Constant.WHITE) == color) {
+				if (gameRef.getColor(i, j) == color) {
 					continue;
 				}
 				
 				HashSet<Pair> moveList = getMoveList(gameRef, i, j);
-				if (moveList.contains(kingPos)) {
-					System.out.println("Check, boy!");
-					return true;
+				for (Pair position : positions) {
+					if (moveList.contains(position)) {
+						System.out.println(gameRef.getCell(i, j) + ", " + position);
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean isCheck(Game gameRef, byte color) {
+		Pair kingPos = null;
+		for (int i = 0; i < 8; ++i) {
+			for (int j = 0; j < 8; ++j) {
+				if (gameRef.getColor(i, j) == color && gameRef.isKing(i, j)) {
+					ArrayList<Pair> positions = new ArrayList<Pair>();
+					positions.add(new Pair(i, j));
+					return isAttacked(gameRef, positions, color);
 				}
 			}
 		}

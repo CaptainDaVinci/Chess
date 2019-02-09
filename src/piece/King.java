@@ -1,6 +1,8 @@
 package piece;
 
 import util.Pair;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import main.Game;
@@ -27,19 +29,58 @@ public class King {
 			}
 		}
 		
+		if (gameRef.getTurn() && (color & Constant.WHITE) != Constant.WHITE) {
+			return moveList;
+		}
+		
+		if (!gameRef.getTurn() && (color & Constant.WHITE) == Constant.WHITE) {
+			return moveList;
+		}
+		
+		System.out.println("Checking castling!");
+		int rank = (color & Constant.WHITE) == Constant.WHITE ? 7 : 0;
 		if (gameRef.getShortCastleRights()) {
-			int rank = (color & Constant.WHITE) != 0 ? 7 : 0;
-			if (gameRef.isEmpty(rank, 5) && gameRef.isEmpty(rank, 6)) {
-				moveList.add(new Pair(rank, 6));
-				gameRef.setShortCastle(true);
+			boolean flag = true;
+			for (int i = 5; i < 7; ++i) {
+				if (!gameRef.isEmpty(rank, i)) {
+					System.out.println("Not empty! " + i + ", " +  rank);
+					flag = false;
+					break;
+				}
+			}
+
+			if (flag) {
+				ArrayList<Pair> positions = new ArrayList<Pair>();
+				for (int i = 4; i <= 7; ++i) {
+					positions.add(new Pair(rank, i));
+				}
+				
+				if (!Helper.isAttacked(gameRef, positions, color)) {
+					moveList.add(new Pair(rank, 6));
+					gameRef.setShortCastle(true);
+				}
 			}
 		}
 
 		if (gameRef.getLongCastleRights()) {
-			int rank = (color & Constant.WHITE) != 0 ? 7 : 0;
-			if (gameRef.isEmpty(rank, 3) && gameRef.isEmpty(rank, 2) && gameRef.isEmpty(rank, 1)) {
-				moveList.add(new Pair(rank, 2));
-				gameRef.setLongCastle(true);
+			boolean flag = true;
+			for (int i = 1; i < 4; ++i) {
+				if (!gameRef.isEmpty(rank, i)) {
+					flag = false;
+					break;
+				}
+			}
+
+			if (flag) {
+				ArrayList<Pair> positions = new ArrayList<Pair>();
+				for (int i = 0; i <= 4; ++i) {
+					positions.add(new Pair(rank, i));
+				}
+				
+				if (!Helper.isAttacked(gameRef, positions, color)) {
+					moveList.add(new Pair(rank, 2));
+					gameRef.setLongCastle(true);
+				}
 			}
 		}
 		
