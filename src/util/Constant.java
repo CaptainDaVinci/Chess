@@ -10,8 +10,8 @@ public class Constant {
 	public static final String WHITE_CELL = "#ffce9e"; 
 	public static final String BLACK_CELL = "#d18b47";
 	
-	public static final byte WHITE = 0x40; 
 	public static final byte BLACK = 0x00; 
+	public static final byte WHITE = 0x40; 
 	public static final byte KING = 0x20;
 	public static final byte QUEEN = 0x10;
 	public static final byte ROOK = 0x08;

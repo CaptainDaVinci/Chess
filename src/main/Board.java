@@ -1,5 +1,5 @@
 package main;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -62,11 +62,8 @@ public class Board {
 				gameRef.getColor(selectedCell.x, selectedCell.y) == color&& 
 				turn) {
 
-			boolean f = true;
-			for (Pair p : gameRef.getMoveList()) {
-				if (p.equals(selectedCell)) {
-					return false;
-				}
+			if (gameRef.getMoveList().contains(selectedCell)) {
+				return false;
 			}
 			
 			return true;
@@ -106,7 +103,7 @@ public class Board {
 	}
 	
 	public void drawPossibleMoves() {
-		ArrayList<Pair> moves = gameRef.generateMoves(activatedCell.x, activatedCell.y);
+		HashSet<Pair> moves = gameRef.generateMoves(activatedCell.x, activatedCell.y);
 
 		for (Pair p : moves) {
 			Circle circle = new Circle(Constant.CELL_MARKER_RADIUS);

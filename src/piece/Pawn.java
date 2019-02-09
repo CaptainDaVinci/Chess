@@ -1,7 +1,7 @@
 package piece;
 
 import util.Pair;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import main.Game;
 import util.Helper;
@@ -9,8 +9,8 @@ import util.Constant;
 
 public class Pawn {
 
-	public static ArrayList<Pair> generateMoves(Game gameRef, byte color, int x, int y) {
-		ArrayList<Pair> moveList = new ArrayList<Pair>();
+	public static HashSet<Pair> generateMoves(Game gameRef, byte color, int x, int y) {
+		HashSet<Pair> moveList = new HashSet<>();
 
 		if ((color & Constant.WHITE) != 0) {
 			if (gameRef.isEmpty(x - 1, y)) {

@@ -1,5 +1,7 @@
 package util;
 
+import java.util.Objects;
+
 public class Pair {
 	public int x, y;
 	
@@ -8,8 +10,29 @@ public class Pair {
 		this.y = y;
 	}
 	
-	public boolean equals(Pair p) {
-		return x == p.x && y == p.y;
+	@Override
+	public String toString() {
+		return "(" + x  + ", " + y + ")"; 
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		
+		if (!(o instanceof Pair)) {
+			return false;
+		}
+		
+		Pair p = (Pair) o; 
+		return p.x == this.x && p.y == y;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y);
+		
 	}
 	
 	public boolean equals(int x, int y) {
