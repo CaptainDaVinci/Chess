@@ -17,7 +17,7 @@ public class Pawn {
 				moveList.add(new Pair(x - 1, y));
 			}
 			
-			if (x == 6 && gameRef.isEmpty(x - 2, y)) {
+			if (x == 6 && gameRef.isEmpty(x - 1, y) && gameRef.isEmpty(x - 2, y)) {
 				moveList.add(new Pair(x - 2, y));
 			}
 			
@@ -34,7 +34,7 @@ public class Pawn {
 				moveList.add(new Pair(x + 1, y));
 			}
 			
-			if (x == 1 && gameRef.isEmpty(x + 2, y)) {
+			if (x == 1 && gameRef.isEmpty(x + 1, y) && gameRef.isEmpty(x + 2, y)) {
 				moveList.add(new Pair(x + 2, y));
 			}
 			
