@@ -1,9 +1,14 @@
 package main;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -24,10 +29,37 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		BorderPane border = new BorderPane();
-		
 		Background background = new Background(new BackgroundFill(Constant.BACKGROUND_IMAGE, CornerRadii.EMPTY, Insets.EMPTY));
-		border.setBackground(background);
+
+		StackPane mainSceneRoot = new StackPane();
+		mainSceneRoot.setBackground(background);
+
+		Image image = new Image("/res/chess-logo.png"); 
+		ImageView imageView = new ImageView();
+        imageView.setImage(image);
+
+        Button button = new Button("Start");
+        button.setMinWidth(200);
+        button.setMinHeight(50);
+        button.setStyle(
+        			"-fx-text-fill: white;" + 
+        			"-fx-font: 48 Arial Narrow;" + 
+        			"-fx-font-weight: bold;" + 
+        			"-fx-background-color: linear-gradient(#d38e57, #aa6e3f);" + 
+					"-fx-effect: dropshadow(three-pass-box , rgba(0,0,0,0.6) , 0.82745  0.55686  0.34118);"
+        		);
+
+		VBox box = new VBox(85, imageView, button);
+		box.setAlignment(Pos.CENTER);
+		mainSceneRoot.getChildren().add(box);
+	
+		Scene mainScene = new Scene(mainSceneRoot);
+		primaryStage.setScene(mainScene);
+		primaryStage.setMaximized(true);
+		primaryStage.show();
+		
+		BorderPane root = new BorderPane();
+		root.setBackground(background);
 
 		GridPane grid = new GridPane();
 		grid.setHgap(0.1);
@@ -35,8 +67,8 @@ public class Main extends Application {
 		grid.setAlignment(Pos.CENTER);
 		grid.setMaxHeight(8.4 * Constant.CELL_SIZE);
 		grid.setMaxWidth(8.4 * Constant.CELL_SIZE);
-		grid.setStyle("-fx-background-color: black;");
-		border.setCenter(grid);
+		grid.setStyle("-fx-background-color: #512c0e;");
+		root.setCenter(grid);
 
 		Text whiteTime = createText("10:00");
 		Text blackTime = createText("10:00");
@@ -47,27 +79,29 @@ public class Main extends Application {
 		VBox timerBox = new VBox(5 * Constant.CELL_SIZE, whitePane, blackPane);
 		timerBox.setPadding(new Insets(50));
 		timerBox.setAlignment(Pos.CENTER_LEFT);
-        border.setRight(timerBox);
+		root.setRight(timerBox);
 
-        GridPane whiteGrid = new GridPane();
-        GridPane blackGrid = new GridPane();
-        
-        whiteGrid.setMinSize(4 * Constant.CELL_SIZE, Constant.CELL_SIZE);
-        blackGrid.setMinSize(4 * Constant.CELL_SIZE, Constant.CELL_SIZE);
+		GridPane whiteGrid = new GridPane();
+		GridPane blackGrid = new GridPane();
+		
+		whiteGrid.setMinSize(4 * Constant.CELL_SIZE, Constant.CELL_SIZE);
+		blackGrid.setMinSize(4 * Constant.CELL_SIZE, Constant.CELL_SIZE);
 
 		VBox piecesTakenBox = new VBox(5 * Constant.CELL_SIZE, whiteGrid, blackGrid);
 		piecesTakenBox.setPadding(new Insets(50));
 		piecesTakenBox.setAlignment(Pos.CENTER_RIGHT);
-		border.setLeft(piecesTakenBox);
+		root.setLeft(piecesTakenBox);
 
-		Scene scene = new Scene(border);
-		primaryStage.setScene(scene);
-		primaryStage.setMaximized(true);
-		primaryStage.show();
-
-		Game game = new Game(whiteTime, blackTime, whiteGrid, blackGrid);
-		Board board = new Board(game);
-		board.draw(grid);
+		button.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				primaryStage.getScene().setRoot(root);
+				Game game = new Game(whiteTime, blackTime, whiteGrid, blackGrid);
+				Board board = new Board(game);
+				board.draw(grid);
+			}
+		});
 	}
 	
 	private StackPane createStackPane(Text timeText) {

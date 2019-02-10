@@ -40,6 +40,7 @@ public class Constant {
 	public static final ImagePattern WHITE_BISHOP_IMAGE = new ImagePattern(new Image("/res/white/bishop.png"));
 	public static final ImagePattern WHITE_PAWN_IMAGE = new ImagePattern(new Image("/res/white/pawn.png"));
 	public static final ImagePattern BACKGROUND_IMAGE = new ImagePattern(new Image("/res/background.png"));
+	public static final ImagePattern LOGO_IMAGE = new ImagePattern(new Image("/res/chess-logo.png"));
 	
 	public static final int TIME = 600;
 }
