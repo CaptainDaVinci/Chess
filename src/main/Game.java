@@ -1,9 +1,12 @@
 package main;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import util.Pair;
 import util.WrapInt;
@@ -23,8 +26,10 @@ public class Game {
 	private Timer player1Time, player2Time;
 	private WrapInt whiteTime, blackTime;
 	private Text whiteTimeText, blackTimeText;
+	private GridPane whiteCasualties, blackCasualties;
+	private int wi, wj, bi, bj;
 
-	public Game(Text whiteTimeText, Text blackTimeText) {
+	public Game(Text whiteTimeText, Text blackTimeText, GridPane whiteCasualties, GridPane blackCasualties) {
 		board = new byte[8][8];
 		moveList = new HashSet<Pair>();
 		turn = true;
@@ -35,9 +40,12 @@ public class Game {
 
 		blackTime = new WrapInt(Constant.TIME);
 		whiteTime = new WrapInt(Constant.TIME);
+		wi = wj = bi = bj = 0;
 		
 		this.whiteTimeText = whiteTimeText;
 		this.blackTimeText = blackTimeText;
+		this.whiteCasualties = whiteCasualties;
+		this.blackCasualties = blackCasualties;
 
 		player1Time = new Timer();
 		player1Time.schedule(new Countdown(whiteTime, whiteTimeText), 1000, 1000);
@@ -192,7 +200,30 @@ public class Game {
 		}
 
 		board[from.x][from.y] = 0;
+
+		if (!isEmpty(to.x, to.y)) {
+			Rectangle cell = new Rectangle(0, 0, Constant.CELL_SIZE / 2, Constant.CELL_SIZE / 2);
+			cell.setFill(Helper.getImagePattern(this, to.x, to.y));
+
+			if (isWhite(to.x, to.y)) {
+				whiteCasualties.add(cell, wj++, wi);
+				if (wj > 7) {
+					++wi;
+					wj = 0;
+				}
+			}
+
+			if (isBlack(to.x, to.y)) {
+				blackCasualties.add(cell, bj++, bi);
+				if (bj > 7) {
+					++bi;
+					bj = 0;
+				}
+			}
+		}
+
 		board[to.x][to.y] = fromPieceId;
+		
 		
 		if (turn) {
 			player1Time.cancel();

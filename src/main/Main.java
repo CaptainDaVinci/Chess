@@ -51,12 +51,9 @@ public class Main extends Application {
 
         GridPane whiteGrid = new GridPane();
         GridPane blackGrid = new GridPane();
-
-        /*
-        Rectangle cell2 = new Rectangle(0, 0, Constant.CELL_SIZE / 2, Constant.CELL_SIZE / 2);
-        cell2.setFill(Constant.BLACK_QUEEN_IMAGE);
-        blackGrid.add(cell2, 0, 0);
-        */
+        
+        whiteGrid.setMinSize(4 * Constant.CELL_SIZE, Constant.CELL_SIZE);
+        blackGrid.setMinSize(4 * Constant.CELL_SIZE, Constant.CELL_SIZE);
 
 		VBox piecesTakenBox = new VBox(5 * Constant.CELL_SIZE, whiteGrid, blackGrid);
 		piecesTakenBox.setPadding(new Insets(50));
@@ -68,7 +65,7 @@ public class Main extends Application {
 		primaryStage.setMaximized(true);
 		primaryStage.show();
 
-		Game game = new Game(whiteTime, blackTime);
+		Game game = new Game(whiteTime, blackTime, whiteGrid, blackGrid);
 		Board board = new Board(game);
 		board.draw(grid);
 	}
