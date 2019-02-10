@@ -15,6 +15,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import util.Constant;
+import util.Helper;
 import util.Pair;
 
 public class Board {
@@ -42,7 +43,7 @@ public class Board {
 				stackPanes[i][j].setBackground(background);
 				stackPanes[i][j].getChildren().add(cell);
 
-				grid.add(stackPanes[i][j], j, i);
+				grid.add(stackPanes[i][j], j + 1, i + 1);
 
 				Pair selectedCell = new Pair(i, j);
 				stackPanes[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -120,47 +121,9 @@ public class Board {
 				}
 
 				if (!gameRef.isEmpty(i, j)) {
+					ImagePattern imagePattern = Helper.getImagePattern(gameRef, i, j);
+					
 					Rectangle cell = new Rectangle(j * Constant.CELL_SIZE, i * Constant.CELL_SIZE, Constant.CELL_SIZE, Constant.CELL_SIZE);
-					
-					ImagePattern imagePattern;
-					if (gameRef.isKing(i, j)) {
-						if (gameRef.isWhite(i, j)) {
-							imagePattern = Constant.WHITE_KING_IMAGE;
-						} else {
-							imagePattern = Constant.BLACK_KING_IMAGE;
-						}
-					} else if (gameRef.isQueen(i, j)) {
-						if (gameRef.isWhite(i, j)) {
-							imagePattern = Constant.WHITE_QUEEN_IMAGE;
-						} else {
-							imagePattern = Constant.BLACK_QUEEN_IMAGE;
-						}
-					} else if (gameRef.isBishop(i, j)) {
-						if (gameRef.isWhite(i, j)) {
-							imagePattern = Constant.WHITE_BISHOP_IMAGE;
-						} else {
-							imagePattern = Constant.BLACK_BISHOP_IMAGE;
-						}
-					} else if (gameRef.isKnight(i, j)) {
-						if (gameRef.isWhite(i, j)) {
-							imagePattern = Constant.WHITE_KNIGHT_IMAGE;
-						} else {
-							imagePattern = Constant.BLACK_KNIGHT_IMAGE;
-						}
-					} else if (gameRef.isRook(i, j)) {
-						if (gameRef.isWhite(i, j)) {
-							imagePattern = Constant.WHITE_ROOK_IMAGE;
-						} else {
-							imagePattern = Constant.BLACK_ROOK_IMAGE;
-						}
-					} else {
-						if (gameRef.isWhite(i, j)) {
-							imagePattern = Constant.WHITE_PAWN_IMAGE;
-						} else {
-							imagePattern = Constant.BLACK_PAWN_IMAGE;
-						}
-					}
-					
 					cell.setFill(imagePattern);
 					stackPanes[i][j].getChildren().add(cell);
 				}

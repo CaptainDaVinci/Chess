@@ -3,6 +3,7 @@ package util;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import javafx.scene.paint.ImagePattern;
 import main.Game;
 
 public class Helper {
@@ -61,6 +62,49 @@ public class Helper {
 		}
 		
 		return false;
+	}
+	
+	public static ImagePattern getImagePattern(Game gameRef, int i, int j) {
+		ImagePattern imagePattern = null;
+		if (gameRef.isKing(i, j)) {
+			if (gameRef.isWhite(i, j)) {
+				imagePattern = Constant.WHITE_KING_IMAGE;
+			} else {
+				imagePattern = Constant.BLACK_KING_IMAGE;
+			}
+		} else if (gameRef.isQueen(i, j)) {
+			if (gameRef.isWhite(i, j)) {
+				imagePattern = Constant.WHITE_QUEEN_IMAGE;
+			} else {
+				imagePattern = Constant.BLACK_QUEEN_IMAGE;
+			}
+		} else if (gameRef.isBishop(i, j)) {
+			if (gameRef.isWhite(i, j)) {
+				imagePattern = Constant.WHITE_BISHOP_IMAGE;
+			} else {
+				imagePattern = Constant.BLACK_BISHOP_IMAGE;
+			}
+		} else if (gameRef.isKnight(i, j)) {
+			if (gameRef.isWhite(i, j)) {
+				imagePattern = Constant.WHITE_KNIGHT_IMAGE;
+			} else {
+				imagePattern = Constant.BLACK_KNIGHT_IMAGE;
+			}
+		} else if (gameRef.isRook(i, j)) {
+			if (gameRef.isWhite(i, j)) {
+				imagePattern = Constant.WHITE_ROOK_IMAGE;
+			} else {
+				imagePattern = Constant.BLACK_ROOK_IMAGE;
+			}
+		} else {
+			if (gameRef.isWhite(i, j)) {
+				imagePattern = Constant.WHITE_PAWN_IMAGE;
+			} else {
+				imagePattern = Constant.BLACK_PAWN_IMAGE;
+			}
+		}
+		
+		return imagePattern;
 	}
 
 }

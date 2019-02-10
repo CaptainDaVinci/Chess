@@ -1,9 +1,14 @@
 package main;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import javafx.scene.text.Text;
 import util.Pair;
+import util.WrapInt;
 import util.Constant;
+import util.Countdown;
 import util.Helper;
 
 public class Game {
@@ -15,8 +20,11 @@ public class Game {
 	private boolean whiteRookMoved, whiteQueenRookMoved;
 	private boolean blackRookMoved, blackQueenRookMoved;
 	private boolean longCastle, shortCastle;
+	private Timer player1Time, player2Time;
+	private WrapInt whiteTime, blackTime;
+	private Text whiteTimeText, blackTimeText;
 
-	public Game() {
+	public Game(Text whiteTimeText, Text blackTimeText) {
 		board = new byte[8][8];
 		moveList = new HashSet<Pair>();
 		turn = true;
@@ -24,7 +32,16 @@ public class Game {
 		whiteRookMoved = whiteQueenRookMoved = false;
 		blackRookMoved = blackQueenRookMoved = false;
 		shortCastle = longCastle = false;
+
+		blackTime = new WrapInt(Constant.TIME);
+		whiteTime = new WrapInt(Constant.TIME);
 		
+		this.whiteTimeText = whiteTimeText;
+		this.blackTimeText = blackTimeText;
+
+		player1Time = new Timer();
+		player1Time.schedule(new Countdown(whiteTime, whiteTimeText), 1000, 1000);
+
 		for (int i = 0; i < 8; ++i) {
 			board[1][i] = Constant.PAWN;
 		}
@@ -176,6 +193,16 @@ public class Game {
 
 		board[from.x][from.y] = 0;
 		board[to.x][to.y] = fromPieceId;
+		
+		if (turn) {
+			player1Time.cancel();
+			player2Time = new Timer();
+			player2Time.schedule(new Countdown(blackTime, blackTimeText), 0, 1000);
+		} else {
+			player2Time.cancel();
+			player1Time = new Timer();
+			player1Time.schedule(new Countdown(whiteTime, whiteTimeText), 0, 1000);
+		}
 		
 		this.turn = !this.turn;
 		moveList.clear();
