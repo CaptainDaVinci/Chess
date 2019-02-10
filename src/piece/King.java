@@ -37,13 +37,11 @@ public class King {
 			return moveList;
 		}
 		
-		System.out.println("Checking castling!");
 		int rank = (color & Constant.WHITE) == Constant.WHITE ? 7 : 0;
 		if (gameRef.getShortCastleRights()) {
 			boolean flag = true;
 			for (int i = 5; i < 7; ++i) {
 				if (!gameRef.isEmpty(rank, i)) {
-					System.out.println("Not empty! " + i + ", " +  rank);
 					flag = false;
 					break;
 				}

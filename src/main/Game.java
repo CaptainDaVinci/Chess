@@ -1,4 +1,5 @@
 package main;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import util.Pair;
@@ -179,10 +180,36 @@ public class Game {
 		this.turn = !this.turn;
 		moveList.clear();
 
+		if (noMovesPossible()) {
+			if (isCheck()) {
+				System.out.println("Checkmate, boy!");
+			} else {
+				System.out.println("Stalemate, boy!");
+			}
+		} else {
+			System.out.println("Moves possible");
+		}
+
 		setShortCastle(false);
 		setLongCastle(false);
 	}
 	
+	private boolean noMovesPossible() {
+		byte color = turn ? Constant.WHITE : Constant.BLACK;
+		
+		for (int i = 0; i < 8; ++i) {
+			for (int j = 0; j < 8; ++j) {
+				if (getColor(i, j) == color) {
+					if (!generateMoves(i, j).isEmpty()) {
+						return false;
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
+
 	private boolean pawnPromotion(Pair from, Pair to) {
 		if (isWhite(from.x, from.y)) {
 			return to.x == 0;
@@ -204,7 +231,7 @@ public class Game {
 			board[move.x][move.y] = board[x][y];
 			board[x][y] = 0;
 			
-			if (!Helper.isCheck(this, (turn ? Constant.WHITE : Constant.BLACK))) {
+			if (!this.isCheck()) {
 				moveList.add(move);
 			}
 
@@ -214,6 +241,22 @@ public class Game {
 
 		return moveList;
 	}
+
+	public boolean isCheck() {
+		byte color = turn ? Constant.WHITE : Constant.BLACK;
+		for (int i = 0; i < 8; ++i) {
+			for (int j = 0; j < 8; ++j) {
+				if (this.getColor(i, j) == color && this.isKing(i, j)) {
+					ArrayList<Pair> positions = new ArrayList<Pair>();
+					positions.add(new Pair(i, j));
+					return Helper.isAttacked(this, positions, color);
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	
 	public HashSet<Pair> getMoveList() {
 		return moveList;
