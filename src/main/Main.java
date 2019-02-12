@@ -43,10 +43,9 @@ public class Main extends Application {
         button.setMinHeight(50);
         button.setStyle(
         			"-fx-text-fill: white;" + 
-        			"-fx-font: 48 Arial Narrow;" + 
+        			"-fx-font-family: Arial Narrow;" + 
         			"-fx-font-weight: bold;" + 
-        			"-fx-background-color: linear-gradient(#d38e57, #aa6e3f);" + 
-					"-fx-effect: dropshadow(three-pass-box , rgba(0,0,0,0.6) , 0.82745  0.55686  0.34118);"
+        			"-fx-background-color: linear-gradient(#d38e57, #aa6e3f);" 
         		);
 
 		VBox box = new VBox(85, imageView, button);
@@ -70,13 +69,17 @@ public class Main extends Application {
 		grid.setStyle("-fx-background-color: #512c0e;");
 		root.setCenter(grid);
 
-		Text whiteTime = createText("10:00");
-		Text blackTime = createText("10:00");
+		String time = Constant.TIME / 60 + ":" + Constant.TIME % 60;
+		Text whiteTime = createText(time);
+		Text blackTime = createText(time);
+		Text result = createText("");
+		result.setFill(Color.RED);
 		
 		StackPane whitePane = createStackPane(whiteTime);
 		StackPane blackPane = createStackPane(blackTime);
+		StackPane resultPane = createStackPane(result);
 
-		VBox timerBox = new VBox(5 * Constant.CELL_SIZE, whitePane, blackPane);
+		VBox timerBox = new VBox(2.5 * Constant.CELL_SIZE, blackPane, resultPane, whitePane);
 		timerBox.setPadding(new Insets(50));
 		timerBox.setAlignment(Pos.CENTER_LEFT);
 		root.setRight(timerBox);
@@ -97,7 +100,7 @@ public class Main extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				primaryStage.getScene().setRoot(root);
-				Game game = new Game(whiteTime, blackTime, whiteGrid, blackGrid);
+				Game game = new Game(whiteTime, blackTime, whiteGrid, blackGrid, result);
 				Board board = new Board(game);
 				board.draw(grid);
 			}

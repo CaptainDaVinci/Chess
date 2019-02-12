@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import util.Pair;
@@ -23,13 +24,14 @@ public class Game {
 	private boolean whiteRookMoved, whiteQueenRookMoved;
 	private boolean blackRookMoved, blackQueenRookMoved;
 	private boolean longCastle, shortCastle;
+	private boolean gameOver;
 	private Timer player1Time, player2Time;
 	private WrapInt whiteTime, blackTime;
-	private Text whiteTimeText, blackTimeText;
+	private Text whiteTimeText, blackTimeText, resultText;
 	private GridPane whiteCasualties, blackCasualties;
 	private int wi, wj, bi, bj;
 
-	public Game(Text whiteTimeText, Text blackTimeText, GridPane whiteCasualties, GridPane blackCasualties) {
+	public Game(Text whiteTimeText, Text blackTimeText, GridPane whiteCasualties, GridPane blackCasualties, Text result) {
 		board = new byte[8][8];
 		moveList = new HashSet<Pair>();
 		turn = true;
@@ -41,14 +43,18 @@ public class Game {
 		blackTime = new WrapInt(Constant.TIME);
 		whiteTime = new WrapInt(Constant.TIME);
 		wi = wj = bi = bj = 0;
+		gameOver = false;
 		
 		this.whiteTimeText = whiteTimeText;
 		this.blackTimeText = blackTimeText;
+		this.whiteTimeText.setFill(Color.RED);
+		this.blackTimeText.setFill(Color.BLACK);
 		this.whiteCasualties = whiteCasualties;
 		this.blackCasualties = blackCasualties;
+		this.resultText = result;
 
 		player1Time = new Timer();
-		player1Time.schedule(new Countdown(whiteTime, whiteTimeText), 1000, 1000);
+		player1Time.schedule(new Countdown(whiteTime, whiteTimeText, resultText), 1000, 1000);
 
 		for (int i = 0; i < 8; ++i) {
 			board[1][i] = Constant.PAWN;
@@ -156,6 +162,16 @@ public class Game {
 	}
 	
 	public void makeMove(final Pair from, final Pair to) {
+		if (turn && whiteTime.i <= 0) {
+			resultText.setText(Constant.TIMEOUT);
+			return ;
+		}
+
+		if (!turn && blackTime.i <= 0) {
+			resultText.setText(Constant.TIMEOUT);
+			return ;
+		}
+
 		byte fromPieceId = board[from.x][from.y];
 
 		if (isPawn(from.x, from.y) && pawnPromotion(from, to)) {
@@ -226,26 +242,38 @@ public class Game {
 		
 		
 		if (turn) {
+			whiteTimeText.setFill(Color.BLACK);
+			blackTimeText.setFill(Color.RED);
 			player1Time.cancel();
 			player2Time = new Timer();
-			player2Time.schedule(new Countdown(blackTime, blackTimeText), 0, 1000);
+			player2Time.schedule(new Countdown(blackTime, blackTimeText, resultText), 0, 1000);
 		} else {
+			blackTimeText.setFill(Color.BLACK);
+			whiteTimeText.setFill(Color.RED);
 			player2Time.cancel();
 			player1Time = new Timer();
-			player1Time.schedule(new Countdown(whiteTime, whiteTimeText), 0, 1000);
+			player1Time.schedule(new Countdown(whiteTime, whiteTimeText, resultText), 0, 1000);
 		}
 		
 		this.turn = !this.turn;
 		moveList.clear();
 
+		resultText.setText("");
+		boolean inCheck = isCheck();
+		if (inCheck) {
+			resultText.setText(Constant.CHECK);
+		}
+
 		if (noMovesPossible()) {
-			if (isCheck()) {
-				System.out.println("Checkmate, boy!");
+			if (inCheck) {
+				resultText.setText(Constant.CHECKMATE);
 			} else {
-				System.out.println("Stalemate, boy!");
+				resultText.setText(Constant.STALEMATE);
 			}
-		} else {
-			System.out.println("Moves possible");
+			
+			gameOver = true;
+			player1Time.cancel();
+			player2Time.cancel();
 		}
 
 		setShortCastle(false);
@@ -282,6 +310,20 @@ public class Game {
 	
 	public HashSet<Pair> generateMoves(int x, int y) {
 		moveList.clear();
+		if (gameOver) {
+			return moveList;
+		}
+		
+		if (turn && whiteTime.i <= 0) {
+			resultText.setText(Constant.TIMEOUT);
+			return moveList;
+		}
+
+		if (!turn && blackTime.i <= 0) {
+			resultText.setText(Constant.TIMEOUT);
+			return moveList;
+		}
+
 		HashSet<Pair> allMoves = Helper.getMoveList(this, x, y);
 		
 		for (Pair move : allMoves) {

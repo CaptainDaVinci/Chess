@@ -42,5 +42,9 @@ public class Constant {
 	public static final ImagePattern BACKGROUND_IMAGE = new ImagePattern(new Image("/res/background.png"));
 	public static final ImagePattern LOGO_IMAGE = new ImagePattern(new Image("/res/chess-logo.png"));
 	
-	public static final int TIME = 600;
+	public static final int TIME = 10;
+	public static final String CHECKMATE = "Checkmate";
+	public static final String CHECK = "Check";
+	public static final String STALEMATE = "Stalemate";
+	public static final String TIMEOUT = "Time out";
 }
