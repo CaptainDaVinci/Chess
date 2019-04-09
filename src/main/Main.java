@@ -125,7 +125,6 @@ public class Main extends Application {
 		t.setStyle(
 				"-fx-font: 32 arial;"
 				);
-		
 		return t;
 	}
 	
